@@ -9,13 +9,14 @@ import javax.validation.constraints.Size;
 @Entity
 public class Product {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Size(min = 1, max = 50, message = "lớn hơn 1 và nhỏ hơn 50 ký tự")
     private String name;
-@NotNull(message = "Chưa có ảnh")
+
     private String img;
-    @Min(value = 5000, message = "Lớn hơn 5k nhé")
+
+    @Min(value = 1000, message = "Lớn hơn 1k nhé")
     private double price;
     private boolean status;
 

@@ -6,6 +6,7 @@ import Project.repository.ICategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -38,7 +39,7 @@ public class ProductController {
     @GetMapping("products")
     public ModelAndView show(@RequestParam(defaultValue = "0") int page) {
         ModelAndView modelAndView = new ModelAndView("show");
-        Page<Product> products =  iProductRepo.findAll(PageRequest.of(page, 2));
+        Page<Product> products =  iProductRepo.findAll(PageRequest.of(page, 3, Sort.by("price")));
         modelAndView.addObject("products", products);
         return modelAndView;
     }
@@ -71,7 +72,7 @@ public class ProductController {
         if (bindingResult.hasFieldErrors() ){
             return "create";
         }
-        if (product.getImg().equals("") && imgFile.getSize()== 0){
+        if (product.getImg().equals("") && imgFile.getSize() == 0){
             model.addAttribute("mess", "Chưa có ảnh");
             return "create";
         }
@@ -100,14 +101,18 @@ public class ProductController {
 
     @PostMapping("/edit")
     public String edit(@ModelAttribute Product product, @RequestParam Long id_Category, @RequestParam MultipartFile imgFile) throws IOException {
+
         Category category = iCategoryRepo.findById(id_Category).get();
-        product.setCategory((category));
-        Product product1 = iProductRepo.findById(product.getId()).get();
+
+        Product product1 = product;
+        product1.setImg(iProductRepo.findById(product.getId()).get().getImg());
+
         String name = imgFile.getOriginalFilename();
         if (!name.equals("")) {
             FileCopyUtils.copy(imgFile.getBytes(), new File("F:\\JavaWeb\\demo_ORM_JDBC\\src\\main\\webapp\\img\\" + name));
-            product1.setImg(name);
+            product.setImg(name);
         }
+        product.setCategory((category));
         iProductRepo.save(product1);
         return "redirect:/products";
     }
