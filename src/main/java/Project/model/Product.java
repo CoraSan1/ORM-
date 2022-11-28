@@ -11,7 +11,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 1, max = 50, message = "lớn hơn 1 và nhỏ hơn 50 ký tự")
+    @Size(min = 3, max = 50, message = "lớn hơn 1 và nhỏ hơn 50 ký tự")
     private String name;
 
     private String img;

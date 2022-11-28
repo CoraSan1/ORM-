@@ -39,7 +39,7 @@ public class ProductController {
     @GetMapping("products")
     public ModelAndView show(@RequestParam(defaultValue = "0") int page) {
         ModelAndView modelAndView = new ModelAndView("show");
-        Page<Product> products =  iProductRepo.findAll(PageRequest.of(page, 3, Sort.by("price")));
+        Page<Product> products = iProductRepo.findAll(PageRequest.of(page, 3, Sort.by("price")));
         modelAndView.addObject("products", products);
         return modelAndView;
     }
@@ -69,15 +69,15 @@ public class ProductController {
 
         validateCheckTrungTen.validate(product, bindingResult);
 
-        if (bindingResult.hasFieldErrors() ){
+        if (bindingResult.hasFieldErrors()) {
             return "create";
         }
-        if (product.getImg().equals("") && imgFile.getSize() == 0){
+        if (product.getImg().equals("") && imgFile.getSize() == 0) {
             model.addAttribute("mess", "Chưa có ảnh");
             return "create";
         }
 
-        if (product.getImg().equals("")){
+        if (product.getImg().equals("")) {
             String name = imgFile.getOriginalFilename();
             FileCopyUtils.copy(imgFile.getBytes(), new File("F:\\JavaWeb\\demo_ORM_JDBC\\src\\main\\webapp\\img\\" + name));
             product.setImg(name);
@@ -95,24 +95,37 @@ public class ProductController {
     public ModelAndView edit(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("edit");
         Product product = iProductRepo.findById(id).get();
-        modelAndView.addObject("toan", product);
+        modelAndView.addObject("product", product);
         return modelAndView;
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute Product product, @RequestParam Long id_Category, @RequestParam MultipartFile imgFile) throws IOException {
+    public String edit(@Valid @ModelAttribute Product product, BindingResult bindingResult,@RequestParam String name, @RequestParam Long id_Category, @RequestParam MultipartFile imgFile, Model model) throws IOException {
 
+        String ten = iProductRepo.findById(product.getId()).get().getName();
+        if (!ten.equals(name)) {
+            validateCheckTrungTen.validate(product, bindingResult);
+        }
         Category category = iCategoryRepo.findById(id_Category).get();
+        product.setCategory((category));
+
 
         Product product1 = product;
         product1.setImg(iProductRepo.findById(product.getId()).get().getImg());
 
-        String name = imgFile.getOriginalFilename();
-        if (!name.equals("")) {
-            FileCopyUtils.copy(imgFile.getBytes(), new File("F:\\JavaWeb\\demo_ORM_JDBC\\src\\main\\webapp\\img\\" + name));
-            product.setImg(name);
+        if (bindingResult.hasFieldErrors()) {
+            model.addAttribute("toan", product1);
+            return "edit";
         }
-        product.setCategory((category));
+
+        String name1 = imgFile.getOriginalFilename();
+        if (!name1.equals("")) {
+            FileCopyUtils.copy(imgFile.getBytes(), new File("F:\\JavaWeb\\demo_ORM_JDBC\\src\\main\\webapp\\img\\" + name1));
+            product.setImg(name1);
+        }
+
+
+
         iProductRepo.save(product1);
         return "redirect:/products";
     }

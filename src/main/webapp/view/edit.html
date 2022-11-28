@@ -97,61 +97,73 @@
 </style>
 <body>
 <div align="center">
-  <form action="/edit" method="post" enctype="multipart/form-data" >
-    <h1>Edit Product</h1>
+  <form th:object="${product}" method="post" action="/edit" enctype="multipart/form-data">
+    <h1>Create Product</h1>
     <table>
       <tr>
-        <td>Nhập id</td>
-        <td><input name="id" th:value="${toan.id}" readonly></td>
+        <td>ID</td>
+        <td><input th:field="*{id}" readonly></td>
       </tr>
       <tr>
         <td>Nhập name</td>
-        <td><input name="name" th:value="${toan.name}"></td>
+        <td><input th:field="*{name}" placeholder="nhập name"></td>
       </tr>
-<!--      <tr>-->
-<!--        <td>Nhập img</td>-->
-<!--        <td><input name="imgFile" type="file"></td>-->
-<!--      </tr>-->
+      <tr>
+        <td></td>
+        <td style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></td>
+      </tr>
       <tr>
         <td>Nhập img</td>
         <td>
           <label  class="filupp">
-            <span class="filupp-file-name js-value" th:text="${toan.img}"></span>
+            <span class="filupp-file-name js-value" >Browse Files</span>
             <input type="file" name="imgFile" value="1" />
           </label>
         </td>
         <td><input name="img" placeholder="nhập img" ></td>
       </tr>
       <tr>
+        <td></td>
+        <td style="color: red" th:text="${mess}"></td>
+
+      </tr>
+      <tr>
         <td>Nhập price</td>
-        <td><input name="price" th:value="${toan.price}"></td>
+        <td><input th:field="*{price}" placeholder="nhập price"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="color: red" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></td>
       </tr>
       <tr>
         <td>
           <label>Status:</label></td>
         <td>
-          <select name="status" >
-            <option th:value="1" th:selected="${toan.status}">Con hang</option>
-            <option th:value="0" th:selected="${!toan.status}">Het hang</option>
+          <select th:field="*{status}">
+            <option value="1">Con hang</option>
+            <option value="0">Het hang</option>
           </select></td>
       </tr>
 
       <tr>
         <td>
-          <label>Category</label>
-        </td>
+          <label>Category:</label></td>
         <td>
           <select name="id_Category">
-            <option th:each="cl : ${categories}" th:value="${cl.id}" th:text="${cl.name}" th:selected="${cl.id==toan.category.id}"></option>
+            <option th:each="cl : ${categories}" th:value="${cl.id}" th:text="${cl.name}"></option>
           </select>
         </td>
       </tr>
+
     </table>
+
+
     <button type="submit">Submit</button>
   </form>
 </div>
 </body>
 </html>
+
 <script>
   $(document).ready(function () {
     // get the name of uploaded file
