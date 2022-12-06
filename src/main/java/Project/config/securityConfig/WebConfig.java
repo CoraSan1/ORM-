@@ -1,4 +1,4 @@
-package Project.config;
+package Project.config.securityConfig;
 
 import Project.dao.ProductDAO;
 import Project.service.ProductService;
@@ -36,7 +36,6 @@ import java.util.Properties;
 @Configuration
 @EnableWebMvc
 @ComponentScan("Project")
-
 @EnableSpringDataWebSupport
 @EnableJpaRepositories("Project.repository")
 @EnableTransactionManagement
@@ -107,7 +106,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource());
-        emf.setPackagesToScan(new String[]{"Project/model"});
+        emf.setPackagesToScan(new String[]{"Project.model"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         emf.setJpaVendorAdapter(vendorAdapter);
         emf.setJpaProperties(additionalProperties());

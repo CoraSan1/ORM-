@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-@Service
+
 @Controller
 public class ProductController {
     @Autowired
@@ -36,10 +36,10 @@ public class ProductController {
     @Autowired
     Validate_CheckTrungTen validateCheckTrungTen;
 
-    @GetMapping("products")
+    @GetMapping("/products")
     public ModelAndView show(@RequestParam(defaultValue = "0") int page) {
         ModelAndView modelAndView = new ModelAndView("show");
-        Page<Product> products = iProductRepo.findAll(PageRequest.of(page, 3, Sort.by("price")));
+        Page<Product> products = iProductRepo.findAll(PageRequest.of(page, 3, Sort.by("id")));
         modelAndView.addObject("products", products);
         return modelAndView;
     }
